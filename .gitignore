@@ -1,0 +1,13 @@
+*~
+\#*\#
+*.fastq
+*.sam
+*.bam
+*.fastq.gz
+*fastqc.zip                    
+*.fq.gz
+*.tar*
+*/ref/*         
+*.zip
+*.gz
+data/**
