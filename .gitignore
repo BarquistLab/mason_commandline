@@ -11,3 +11,4 @@
 *.zip
 *.gz
 data/**
+!data/README.md
