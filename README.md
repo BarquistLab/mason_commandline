@@ -8,7 +8,7 @@ Supervision: Lars Barquist
 
 Software needed: Bash shell, [Anaconda](https://docs.anaconda.com/anaconda/install/linux/) / [Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)
 
-<img src="mason.png" alt="mason" style="zoom: 33%;" />
+<img src="mason.png" alt="mason" style="zoom: 25%;" />
 
 ## Introduction
 
@@ -16,10 +16,10 @@ We present the command line version of MASON (Make **A**nti**S**ense **O**ligome
 
 ## Installation
 
-To install the commandline version of MASON, you need a linux-based bash shell and an installed version of [Anaconda](https://docs.anaconda.com/anaconda/install/linux/) or [Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html). Start by cloning the git repository by:
+To install the command line version of MASON, you need a linux-based bash shell and an installed version of [Anaconda](https://docs.anaconda.com/anaconda/install/linux/) or [Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html). Start by cloning the git repository by:
 
-```
-git clone
+```bash
+git clone git@github.com:jakobjung/mason_commandline.git
 ```
 
  
