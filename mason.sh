@@ -1,10 +1,91 @@
 #!/bin/bash
+set -e
+#set -o pipefail
+################################################################################
+#                              MASON command line                              #
+#                                                                              #
+# MASON can be used to design or analyse peptide nucleic acid or other ASOs    #
+# for off-target effects and other sequence-specific attributes.               #
+#                                                                              #
+################################################################################
+################################################################################
+################################################################################
+#                                                                              #
+#  Created by Jakob Jung                                                       #
+#                                                                              #
+################################################################################
+################################################################################
+################################################################################
 
+################################################################################
+# Help                                                                         #
+################################################################################
+Help()
+{
+   # Display Help
+   echo "MASON can be used to design or analyse peptide nucleic acid or other ASOs"
+   echo
+   echo "Version:     v1.0.0"
+   echo "About:       Developed by Jakob Jung @Barquistlab, HIRI"
+   echo "Docs & Code: https://github.com/BarquistLab/mason_commandline"
+   echo "Mail:        jakobjung@tutanota.com"
+   echo
+   echo "Usage:         sh mason.sh [OPTIONS] -f <fasta> -g <gff/gff3/gtf>  -m <nr_mismatches> "
+   echo
+   echo "Options:"
+   echo "Required:      "
+   echo "               -f  FASTA file of target organism"
+   echo "                   - (PATH)"
+   echo
+   echo "               -g  GFF annotation file of target organism"
+   echo "                   - (PATH)"
+   echo
+   echo "               -m  Number of allowed mismatches for off-target"
+   echo "                   screening"
+   echo "                   - (INTEGER)"
+   echo
+   echo "               -i  ID of result; determines name of directory where"
+   echo "                   results are stored"
+   echo "                   - (STRING)"
+   echo
+   echo "Required if you want to design ASO sequences for a scpecific gene:"
+   echo "                -t target gene; Use the locus tag, as annotated in the"
+   echo "                   GFF, column 9, e.g. [...];locus_tag=b1253;[...]"
+   echo "                   - (STRING)"
+   echo
+   echo "                -l length of ASO sequence; we usually recommend"
+   echo "                   10-13 mers"
+   echo "                   - (INTEGER)"
+   echo
+   echo "Optional if you want to design ASO sequences for a scpecific gene:"
+   echo "                 -b bases before the start codon, in which Sequences will be designed"
+   echo "                    - (INTEGER)"
+   echo
+   echo "Required if you already have ASO sequences in FASTA format:"
+   echo "                -p PNA/ASO input, FASTA file of sequences to be screened"
+   echo
+   echo "Help:"
+   echo "                -h print this help menu"
+   echo
+   echo "Version:"
+   echo "                -V print version"
+   echo
+}
+
+################################################################################
+################################################################################
+# Main program                                                                 #
+################################################################################
+################################################################################
+################################################################################
+# Process the input options. Add options as needed.                            #
+################################################################################
 # I start with assigning the flags (user inputs):
 
 result_id=result
+version="v1.0.0"
 
-while getopts f:g:t:l:m:p:i:b: flag
+while getopts f:g:t:l:m:p:i:b:hV flag
 do
     case "${flag}" in
 	f) fasta=${OPTARG};;
@@ -15,16 +96,27 @@ do
 	i) result_id=${OPTARG};;
 	p) pna_input=${OPTARG};;
 	b) bases_before=${OPTARG};;
+	h) Help
+	   exit;;
+	V) echo "$version"
+	   exit;;
     esac
 done
 
 
 # I print them out to be sure it worked out:
-echo "bases_before= $bases_before"
 echo "fasta: $fasta";
 echo "gff: $gff";
 
-mkdir "./data/$result_id"
+if  [ -z "$fasta"] || [-z "$gff" ] || [-z "$mismatches"]; then
+        echo 'ERROR: Missing required arguments for fasta (-f) or gff (-g) or mismatches (-m)' >&2
+        exit 1
+fi
+
+
+
+
+mkdir -p "./data/$result_id"
 RES="./data/$result_id"
 REF="$RES/reference_sequences"
 OUT="$RES/outputs"
@@ -58,6 +150,13 @@ echo $pna_input
 if [ -z  "$pna_input" ];
 then
     echo "no PNA put in"
+    # check whether user input is correct:
+    if [ -z "$target"] || [-z "$length" ] ||  [-z "$bases_before" ] ; then
+        echo '\nERROR: Do not specify -t, -l, -b if you submit fasta files of ASOS with -p;' >&2
+	echo '       Also do not specify -p if you have specified a target gene with  -t, -l, -b' >&2
+        exit 1
+    fi
+    
     # Now I create a list of all PNAs:
     grep -A 1 $target "$REF/full_transcripts_$FASTA" | \
 	sed -E 's/^([A-Z]{46}).*/\1/' > "$REF/targetgene_startreg.fasta"   # select -30 to + 16 region
@@ -67,6 +166,12 @@ then
     python ./scripts/make_pnas.py $length $RES $bases_before 
 else
     echo "PNA $pna_input put in"
+     # check whether user input is correct:
+    if  [ ! -z "$target"] ||  [ ! -z "$length" ] ||   [ ! -z "$bases_before" ]; then
+        echo '\nERROR: Do not specify -t, -l, -b if you submit fasta files of ASOS with -p' >&2
+	echo '       Also do not specify -p if you have specified a target gene with  -t, -l, -b' >&2
+        exit 1
+    fi
     python ./scripts/modify_PNAs.py $pna_input $RES
 fi
 

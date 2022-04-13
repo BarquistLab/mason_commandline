@@ -90,7 +90,7 @@ for r in range(len(target_regions)):
     output_df.to_csv(res_path + "/outputs/result_table.tsv", sep="\t", index=False)
     # run rscript:
     print(res_path + "/outputs/result_table.tsv")
-    subprocess.run(["Rscript", "./melting.R", res_path + "/outputs/result_table.tsv"])
+    subprocess.run(["Rscript", "./scripts/melting.R", res_path + "/outputs/result_table.tsv"])
 
     # seaborn:
     fig, ax = plt.subplots(figsize=(15, count/3))
