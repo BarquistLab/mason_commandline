@@ -8,7 +8,7 @@ Supervision: Lars Barquist
 
 Software needed: Bash shell, [Anaconda](https://docs.anaconda.com/anaconda/install/linux/) / [Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)
 
-<img src="../browser/pnag/static/mason.png" alt="mason" style="zoom: 33%;" />
+<img src="mason.png" alt="mason" style="zoom: 33%;" />
 
 ## Introduction
 
